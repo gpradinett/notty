@@ -1,0 +1,234 @@
+/* Reset y configuraciones base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Variables CSS */
+:root {
+    --primary-bg: #111;
+    --secondary-bg: #000;
+    --footer-bg: #000000;
+    --text-color: #fff;
+    --hover-color: #FFD700;
+}
+
+/* Estilo del body */
+body {
+    background-color: var(--primary-bg);
+    font-family: Arial, sans-serif;
+}
+
+/* Contenedor principal */
+.container {
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    grid-template-rows: minmax(20px, 50px) 1fr 50px; /* Reducir altura del header */
+    min-height: 100vh;
+    grid-template-areas: 
+        "header main main main main main main main main main main main main main main main main main main main"
+        "header main main main main main main main main main main main main main main main main main main main"
+        "header footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer";
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr auto auto;
+        grid-template-areas: 
+            "main"
+            "footer"
+            "header";
+    }
+
+    .container footer {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px; /* Borde redondeado inferior derecho */
+    }
+}
+
+@media (max-width: 768px) {
+    .container > main {
+        border-top-left-radius: 0 !important; /* Asegúrate de que se aplique */
+    }
+}
+
+/* Header */
+.container header {
+    grid-area: header;
+    background-color: var(--primary-bg);
+}
+
+/* Main */
+.container main {
+    grid-area: main;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    padding: 20px;
+    border-top-left-radius: 10px;
+}
+
+/* Footer */
+.container footer {
+    grid-area: footer;
+    background-color: var(--footer-bg);
+    color: var(--text-color);
+    text-align: center;
+    padding: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+
+/* NAV */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 90px;
+    background-color: #111;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 0;
+    z-index: 1000; /* Asegura que nav esté por encima de otros elementos */
+}
+  
+  nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  nav .nav-item {
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    margin: 10px 0;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  nav .nav-item i {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+  
+  nav .nav-item span {
+    font-size: 12px;
+  }
+
+  nav .nav-item i, 
+.sidebar .nav-item i {
+    color: var(--text-color); /* Usar la variable de color blanco definida */
+}
+
+nav .nav-item span, 
+.sidebar .nav-item span {
+    color: var(--text-color); /* Asegúrate de que el texto también sea blanco */
+}
+
+  
+  nav .nav-item:hover {
+    background-color: #9b40fc;
+    transform: translateX(5px);
+  }
+  
+/* Sidebar */
+.sidebar {
+    position: fixed; /* Corregido */
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 90px;
+    background-color: #111;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    z-index: 1000; /* Asegura que sidebar esté por encima de otros elementos */
+}
+  
+  .sidebar .nav-item a {
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .sidebar .nav-item span {
+    font-size: 12px;
+    color: #aaa;
+  }
+  
+  .sidebar .nav-item:hover {
+    background-color: #9b40fc;
+    transform: translateX(5px);
+  }
+  
+
+  /* NAV */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 90px;
+    background-color: #111;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 0;
+    z-index: 1000; /* Asegura que nav esté por encima de otros elementos */
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed; /* Corregido */
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 90px;
+    background-color: #111;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    z-index: 1000; /* Asegura que sidebar esté por encima de otros elementos */
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+    nav, .sidebar {
+        position: relative; /* Cambiar de fixed a relative */
+        width: 100%; /* Ajusta el ancho al 100% */
+        height: auto; /* Ajusta la altura automáticamente */
+        flex-direction: row; /* Cambia la dirección de los elementos */
+        justify-content: center; /* Centra los elementos horizontalmente */
+        padding: 10px 0; /* Reduce el padding */
+    }
+
+    nav ul, .sidebar ul {
+        display: flex;
+        flex-direction: row; /* Alinear horizontalmente los elementos */
+    }
+
+    nav .nav-item, .sidebar .nav-item {
+        width: auto; /* Ajusta el ancho de los ítems */
+        height: auto; /* Ajusta la altura de los ítems */
+        margin: 0 10px; /* Espaciado entre ítems */
+    }
+}
+

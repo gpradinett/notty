@@ -1,0 +1,67 @@
+/* Reset CSS */
+
+/* Eliminar márgenes, paddings y bordes predeterminados */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Heredar tipografía y color */
+  html {
+    font-size: 100%; /* Tamaño de fuente base */
+    line-height: 1.5; /* Altura de línea estándar */
+    -webkit-text-size-adjust: 100%; /* Prevenir zoom automático en móviles */
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Hacer que los elementos de bloque utilicen todo el ancho disponible */
+  body, h1, h2, h3, h4, h5, h6, p, blockquote, pre, figure, dl, dd {
+    margin: 0;
+  }
+  
+  /* Eliminar estilos por defecto de listas */
+  ul, ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Eliminar estilos predeterminados de enlaces */
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  /* Normalizar botones */
+  button, input, textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    outline: none;
+    appearance: none;
+  }
+  
+  /* Hacer que las imágenes y videos sean responsivos por defecto */
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Asegurar que las tablas no tengan márgenes colapsados */
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  
+  /* Ocultar bordes de inputs y selects en navegadores móviles */
+  input[type='search']::-webkit-search-cancel-button,
+  input[type='search']::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+  
