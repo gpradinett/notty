@@ -161,4 +161,17 @@ nav .nav-item:hover {
     width: auto; /* Ajusta automáticamente el ancho */
     height: auto; /* Ajusta automáticamente la altura */
   }
+
+  nav .nav-item {
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    margin: 10px 0;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
 }
