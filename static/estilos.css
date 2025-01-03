@@ -126,34 +126,39 @@ nav .nav-item:hover {
 
 /* Responsive para pantallas pequeñas */
 @media (max-width: 768px) {
+  /* Cambia la disposición ge
+  neral del grid a una columna para pantallas pequeñas */
   .container {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr; /* Una sola columna */
+    grid-template-rows: auto 1fr auto; /* Distribución de filas */
     grid-template-areas: 
-        "header"
-        "main"
-        "footer";
+        "header" /* Header ocupa la primera fila */
+        "main"   /* Main ocupa la segunda fila */
+        "footer";/* Footer ocupa la última fila */
   }
 
+  /* Ajusta el sidebar para que se convierta en una barra horizontal */
   nav.sidebar {
-    position: relative;
-    height: auto;
-    width: 100%;
-    flex-direction: row;
-    justify-content: center;
-    padding: 10px 0;
+    position: relative; /* Elimina la posición fija */
+    height: auto; /* Ajusta automáticamente la altura */
+    width: 100%; /* El sidebar ocupa todo el ancho de la pantalla */
+    flex-direction: row; /* Coloca los elementos en una fila horizontal */
+    justify-content: center; /* Centra los elementos horizontalmente */
+    padding: 5px 0; /* Espaciado superior e inferior */
   }
 
+  /* Ajusta la lista de navegación */
   nav ul {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 10px;
+    display: flex; /* Usa Flexbox para los elementos de la lista */
+    flex-direction: row; /* Coloca los ítems en una fila */
+    justify-content: center; /* Centra los ítems en la barra */
+    gap: 10px; /* Añade un espacio de 10px entre cada ítem */
   }
 
+  /* Ajusta los elementos individuales del menú */
   nav .nav-item {
-    margin: 0;
-    width: auto;
-    height: auto;
+    margin: 10px; /* Elimina el margen */
+    width: auto; /* Ajusta automáticamente el ancho */
+    height: auto; /* Ajusta automáticamente la altura */
   }
 }
