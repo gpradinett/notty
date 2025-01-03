@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
+  <meta name="description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+  <meta property="og:title" content="Lorem ipsum dolor sit amet">
+  <meta property="og:description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gpradinett.com">
+  <meta property="og:image" content="https://gpradinett.com/static/image.jpg">
+  <meta name="robots" content="index, follow">
+  <title>{{ section.title if section else "Lorem ipsum" }}</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./static/estilos.css">
 </head>
