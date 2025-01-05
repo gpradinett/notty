@@ -3,51 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Una interfaz estilizada para guardar, remixar y explorar opciones.">
-  <meta property="og:title" content="Stylish Interface">
-  <meta property="og:description" content="Interfaz intuitiva y estilizada.">
+  <meta name="description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+  <meta property="og:title" content="Lorem ipsum dolor sit amet">
+  <meta property="og:description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://tu-sitio.com">
-  <meta property="og:image" content="https://tu-sitio.com/static/image.jpg">
+  <meta property="og:url" content="https://gpradinett.com">
+  <meta property="og:image" content="https://gpradinett.com/static/image.jpg">
   <meta name="robots" content="index, follow">
-  <title>{{ section.title if section else "Stylish Interface" }}</title>
+  <title>{{ section.title if section else "gpradinett website" }}</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/static/reset.css">
-  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="./static/estilos.css">
 </head>
 <body>
-  <nav class="sidebar" aria-label="Main Navigation">
-    <div>
-      <div class="nav-item">
-        <a href="/save"><i class="fas fa-download"></i><span>Save</span></a>
-      </div>
-      <div class="nav-item">
-        <a href="/remix"><i class="fas fa-sync-alt"></i><span>Remix</span></a>
-      </div>
-    </div>
-    <div class="sidebar-bottom">
-      <div class="nav-item">
-        <a href="/settings"><i class="fas fa-cog"></i><span>Settings</span></a>
-      </div>
-      <div class="nav-item">
-        <a href="/donate"><i class="fas fa-heart"></i><span>Donate</span></a>
-      </div>
-      <div class="nav-item">
-        <a href="/updates"><i class="fas fa-info-circle"></i><span>Updates</span></a>
-      </div>
-      <div class="nav-item">
-        <a href="/about"><i class="fas fa-question-circle"></i><span>About</span></a>
-      </div>
-    </div>
-  </nav>
-  <main class="main-content" role="main">
-   <!-- <h1>{{ section.title if section else "Stylish Interface" }}</h1>-->
-    {% block content %}
-    {% endblock %}
-  </main>
-  <footer class="footer" role="contentinfo">
-    <p><a href="#" class="btn-shine">Powered By Gpradinett.</a></p>
-    <p><a href="#" class="btn-shine">Made with Love.</a></p>
-  </footer>
+  <div class="container">
+    <!-- Header -->
+    <header>
+        <nav class="sidebar" aria-label="Main Navigation">
+            <ul>
+              <li class="nav-item">
+                <a href="/save"><i class="fas fa-download"></i><span>Save</span></a>
+              </li>
+              <li class="nav-item">
+                <a href="/remix"><i class="fas fa-sync-alt"></i><span>Remix</span></a>
+              </li>
+            </ul>
+            <div class="sidebar-bottom">
+              <ul>
+                <li class="nav-item">
+                  <a href="/settings"><i class="fas fa-cog"></i><span>Settings</span></a>
+                </li>
+                <li class="nav-item">
+                  <a href="/donate"><i class="fas fa-heart"></i><span>Donate</span></a>
+                </li>
+                <li class="nav-item">
+                  <a href="/updates"><i class="fas fa-info-circle"></i><span>Updates</span></a>
+                </li>
+                <li class="nav-item">
+                  <a href="/about"><i class="fas fa-question-circle"></i><span>About</span></a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+          
+    </header>
+
+    <!-- Main -->
+    <main role="main">
+      {% block content %}
+      {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 - All rights reserved</p>
+    </footer>
+  </div>
 </body>
 </html>

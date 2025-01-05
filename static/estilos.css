@@ -53,6 +53,9 @@ footer {
   color: var(--text-color);
   text-align: center;
   padding: 10px;
+  border-bottom-left-radius: 10px;
+  max-width: calc(100% - 90px); /* Resta el ancho del sidebar */
+  margin-left: 90px; /* Desplaza el footer hacia la derecha */
 }
 
 /* NAV */
@@ -65,7 +68,7 @@ nav.sidebar {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 0;
+  padding: 0px 0;
   position: fixed;
   left: 0;
   top: 0;
@@ -137,6 +140,10 @@ nav .nav-item:hover {
         "footer";/* Footer ocupa la última fila */
   }
 
+  main {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
   /* Ajusta el sidebar para que se convierta en una barra horizontal */
   nav.sidebar {
     position: relative; /* Elimina la posición fija */
@@ -173,5 +180,12 @@ nav .nav-item:hover {
     justify-content: center;
     align-items: center;
     transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  footer {
+    max-width: 100%; /* Elimina la limitación de ancho */
+    margin-left: 0; /* Elimina el desplazamiento hacia la derecha */
+    border-bottom-left-radius: 0; /* Opcional: elimina bordes redondeados si no son necesarios */
+    border-bottom-right-radius: 0; /* Opcional: elimina bordes redondeados si no son necesarios */
   }
 }
