@@ -14,15 +14,10 @@ templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-
 # Ruta de descarga temporal
 DOWNLOAD_PATH = "./downloads"
 if not os.path.exists(DOWNLOAD_PATH):
     os.makedirs(DOWNLOAD_PATH)
-
-@app.get("/v1", response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "section": None})
 
 # Ruta dinámica para diferentes secciones
 @app.get("/{section_name}", response_class=HTMLResponse)
@@ -38,6 +33,8 @@ async def render_section(request: Request, section_name: str):
     }
     template = templates_map.get(section_name, "404.html")  # Plantilla por defecto: 404.html
     return templates.TemplateResponse(template, {"request": request, "section": {"title": section_name}})
+
+
 @app.get("/info")
 async def page(request: Request, url: str = Query(None)):
     print("Accediendo a la ruta /descarga")
@@ -94,6 +91,7 @@ async def tiktok(url: str = Query(...)):
     except Exception as e:
         raise (e)
 
+
 @app.get("/download")
 async def download(url: str = Query(...), clean_video_title: str = Query):
     try:
@@ -111,7 +109,8 @@ async def download(url: str = Query(...), clean_video_title: str = Query):
             
     except Exception as e:
         raise(e)
-    
+
+
 def clean_title(title):
     # Limitar el título a 100 caracteres para evitar errores de longitud
     title = title[:100]
@@ -121,6 +120,7 @@ def clean_title(title):
     title = re.sub(r"[^\w\s-]", "", title)
     # Reemplazar espacios y guiones múltiples por "_"
     return re.sub(r"[\s-]+", "_", title)
+
 
 def formats(formats):
     # Filtrar los formatos que sean MP4 y tengan un tamaño válido
@@ -151,4 +151,3 @@ def formats(formats):
         mp4_formats = list(unique_formats.values())
             
         return mp4_formats
-
