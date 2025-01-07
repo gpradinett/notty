@@ -1,8 +1,12 @@
 /* Reset y configuraciones base */
+* {
+  font-family: monospace;
+}
 html, body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow: hidden; /* Oculta el scroll global */
 }
 
 /* Variables CSS */
@@ -30,6 +34,7 @@ body {
       "header main"
       "footer footer";
   min-height: 100vh;
+  overflow: hidden; /* Oculta el scroll interno */
 }
 
 /* Header */
@@ -42,8 +47,9 @@ main {
   grid-area: main;
   background-color: var(--secondary-bg);
   color: var(--text-color);
-  padding: 20px;
-  border-top-left-radius: 10px;
+  padding: 20px 10px;
+  border-top-left-radius: 25px;
+  overflow-y: auto; /* Permite el scroll solo en el contenido principal */
 }
 
 /* Footer */
@@ -52,10 +58,11 @@ footer {
   background-color: var(--footer-bg);
   color: var(--text-color);
   text-align: center;
-  padding: 10px;
-  border-bottom-left-radius: 10px;
+  padding: 0px;
+  border-bottom-left-radius: 25px;
   max-width: calc(100% - 90px); /* Resta el ancho del sidebar */
   margin-left: 90px; /* Desplaza el footer hacia la derecha */
+  font-size: 12px; /* Tamaño de fuente */
 }
 
 /* NAV */
@@ -127,6 +134,14 @@ nav .nav-item:hover {
   margin-top: auto;
 }
 
+/* En pantallas pequeñas, asegúrate de que el body no permita el desplazamiento */
+@media (max-width: 768px) {
+  html, body {
+    overflow: hidden; /* Elimina el scroll en móviles */
+    height: 100%; /* Asegúrate de que el contenido ocupe toda la altura disponible */
+  }
+}
+
 /* Responsive para pantallas pequeñas */
 @media (max-width: 768px) {
   /* Cambia la disposición ge
@@ -141,8 +156,8 @@ nav .nav-item:hover {
   }
 
   main {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
   }
   /* Ajusta el sidebar para que se convierta en una barra horizontal */
   nav.sidebar {
@@ -187,5 +202,98 @@ nav .nav-item:hover {
     margin-left: 0; /* Elimina el desplazamiento hacia la derecha */
     border-bottom-left-radius: 0; /* Opcional: elimina bordes redondeados si no son necesarios */
     border-bottom-right-radius: 0; /* Opcional: elimina bordes redondeados si no son necesarios */
+    
+  }
+}
+
+/* update.html*/
+.content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  margin: 10px;
+  max-height: 80vh; /* Ajusta el alto máximo para el contenido con scroll */
+  overflow-y: auto; 
+}
+/* Oculta la barra de desplazamiento en navegadores basados en Webkit */
+.content::-webkit-scrollbar {
+  display: none; /* Oculta la barra de desplazamiento */
+}
+
+/* Oculta la barra de desplazamiento en Firefox */
+.content {
+  scrollbar-width: none; /* Oculta la barra en Firefox */
+  -ms-overflow-style: none; /* Oculta la barra en Internet Explorer/Edge */
+}
+
+.image {
+  display: flex; /* Mantén el uso de flex si es necesario para el diseño */
+  justify-content: center; /* Centra la imagen horizontalmente */
+  align-items: center; /* Centra la imagen verticalmente */
+  object-fit: cover; /* Ajusta la imagen al contenedor */
+}
+
+.image img {
+  width: 300px; /* Establece un ancho deseado */
+  height: auto; /* Mantén la proporción de la imagen */
+  border-radius: 10px; /* (Opcional) Bordes redondeados */
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header .version {
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.header .date {
+  font-size: 14px;
+  color: #aaa;
+  margin-left: 10px;
+}
+
+
+/* From Uiverse.io by neerajbaniwal */ 
+.btn-shine {
+  position: relative;
+  padding: 0px 55px;
+  color: #fff;
+  background: linear-gradient(to right, #9f9f9f 0, #ffffff 10%, #868686 20%);
+  
+  -webkit-background-clip: text;
+  background-clip: text; /* Propiedad estándar */
+  -webkit-text-fill-color: transparent;
+  animation: shine 6s infinite linear; /* Extiende la duración */
+  
+  font-family: "Poppins", sans-serif;
+}
+
+@keyframes shine {
+  0% {
+    background-position: -30px; /* Inicia fuera del contenido */
+  }
+  20% {
+    background-position: 50px; /* Termina al final del contenido */
+  }
+  40% {
+    background-position: 100px; /* Termina al final del contenido */
+  }
+  60% {
+    background-position: 150px; /* Ajusta este valor según el ancho del texto */
+  }
+  80% {
+    background-position: 200px; /* Termina al final del contenido */
+  }
+  100% {
+    background-position: 220px; /* Termina al final del contenido */
   }
 }

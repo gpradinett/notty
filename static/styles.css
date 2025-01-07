@@ -439,7 +439,7 @@ opacity: 0;
 /* From Uiverse.io by neerajbaniwal */ 
 .btn-shine {
 position: relative;
-padding: 2px 48px;
+padding: 0px 48px;
 color: #fff;
 background: linear-gradient(to right, #9f9f9f 0, #fff 10%, #868686 20%);
 
