@@ -19,31 +19,31 @@
     <!-- Header -->
     <header>
         <nav class="sidebar" aria-label="Main Navigation">
+          <ul>
+            <li class="nav-item {% if request.path == '/save' %}active{% endif %}">
+              <a href="/save"><i class="fas fa-download"></i><span>Save</span></a>
+            </li>
+            <li class="nav-item {% if request.path == '/remix' %}active{% endif %}">
+              <a href="/remix"><i class="fas fa-sync-alt"></i><span>Remix</span></a>
+            </li>
+          </ul>
+          <div class="sidebar-bottom">
             <ul>
-              <li class="nav-item">
-                <a href="/save"><i class="fas fa-download"></i><span>Save</span></a>
+              <li class="nav-item {% if request.path == '/settings' %}active{% endif %}">
+                <a href="/settings"><i class="fas fa-cog"></i><span>Settings</span></a>
               </li>
-              <li class="nav-item">
-                <a href="/remix"><i class="fas fa-sync-alt"></i><span>Remix</span></a>
+              <li class="nav-item {% if request.path == '/donate' %}active{% endif %}">
+                <a href="/donate"><i class="fas fa-heart"></i><span>Donate</span></a>
+              </li>
+              <li class="nav-item {% if request.path == '/updates' %}active{% endif %}">
+                <a href="/updates"><i class="fas fa-info-circle"></i><span>Updates</span></a>
+              </li>
+              <li class="nav-item {% if request.path == '/about' %}active{% endif %}">
+                <a href="/about"><i class="fas fa-question-circle"></i><span>About</span></a>
               </li>
             </ul>
-            <div class="sidebar-bottom">
-              <ul>
-                <li class="nav-item">
-                  <a href="/settings"><i class="fas fa-cog"></i><span>Settings</span></a>
-                </li>
-                <li class="nav-item">
-                  <a href="/donate"><i class="fas fa-heart"></i><span>Donate</span></a>
-                </li>
-                <li class="nav-item">
-                  <a href="/updates"><i class="fas fa-info-circle"></i><span>Updates</span></a>
-                </li>
-                <li class="nav-item">
-                  <a href="/about"><i class="fas fa-question-circle"></i><span>About</span></a>
-                </li>
-              </ul>
-            </div>
-          </nav>
+          </div>
+        </nav>
           
     </header>
 
@@ -55,8 +55,8 @@
 
     <!-- Footer -->
     <footer>
-      <p><a class="btn-shine">Powered By Gpradinett.</a></p>
-      <p><a class="btn-shine">Made with Love.</a></p>
+      <p><a class="btn-shine">Powered by gpradinett.</a></p>
+      <p><a class="btn-shine">Made with Love ❤️</a></p>
     </footer>
   </div>
 </body>
