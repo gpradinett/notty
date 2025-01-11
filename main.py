@@ -31,7 +31,7 @@ async def render_section(request: Request, section_name: str):
         "updates": "updates.html",
         "about": "about.html",
     }
-    template = templates_map.get(section_name, "404.html")  # Plantilla por defecto: 404.html
+    template = templates_map.get(section_name, "404.html")
     return templates.TemplateResponse(template, {"request": request, "section": {"title": section_name}})
 
 
