@@ -59,5 +59,21 @@
       <p><a class="btn-shine">Made with Love ❤️</a></p>
     </footer>
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const pasteButton = document.getElementById("paste-btn");
+      const inputField = document.getElementById("link-input");
+  
+      pasteButton.addEventListener("click", async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          inputField.value = text; // Pega el texto en el campo de entrada
+        } catch (err) {
+          console.error("Failed to read clipboard contents:", err);
+          alert("Unable to access clipboard. Please allow clipboard permissions.");
+        }
+      });
+    });
+  </script>  
 </body>
 </html>
