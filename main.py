@@ -151,3 +151,21 @@ def formats(formats):
         mp4_formats = list(unique_formats.values())
             
         return mp4_formats
+
+
+def get_platform_from_url(url: str):
+    """
+    Determina la plataforma de la URL proporcionada.
+    :param url: URL a analizar
+    :return: Nombre de la plataforma (facebook, tiktok, instagram, youtube, etc.) o 'unknown' si no se identifica.
+    """
+    if "facebook.com" in url or "fb.watch" in url:
+        return "facebook"
+    elif "tiktok.com" in url:
+        return "tiktok"
+    elif "instagram.com" in url:
+        return "instagram"
+    elif "youtube.com" in url or "youtu.be" in url:
+        return "youtube"
+    else:
+        return "unknown"
