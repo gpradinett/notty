@@ -44,6 +44,14 @@ async def page(request: Request, url: str = Query(None)):
 
     if url:
         try:
+            # Identificar la plataforma
+            platform = get_platform_from_url(url)
+            
+            if platform == "unknown":
+                return templates.TemplateResponse(
+                    "index.html", {"request": request, "error": "Unsupported platform."}
+                )
+
             # Obtener información del video
             with yt_dlp.YoutubeDL({"noplaylist": True}) as ydl:
                 info_dict = ydl.extract_info(url, download=False)
