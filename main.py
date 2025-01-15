@@ -5,6 +5,8 @@ from fastapi.requests import Request
 import yt_dlp
 import re, os
 from fastapi.staticfiles import StaticFiles
+import requests
+from bs4 import BeautifulSoup
 
 
 app = FastAPI()
