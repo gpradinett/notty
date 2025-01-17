@@ -22,9 +22,8 @@ if not os.path.exists(DOWNLOAD_PATH):
     os.makedirs(DOWNLOAD_PATH)
 
 # Ruta dinámica para diferentes secciones
-@app.get("/{section_name}", response_class=HTMLResponse)
+@app.get("/v1/{section_name}", response_class=HTMLResponse)
 async def render_section(request: Request, section_name: str):
-    # Mapeo de secciones a plantillas
     templates_map = {
         "save": "save.html",
         "remix": "remix.html",
@@ -34,7 +33,9 @@ async def render_section(request: Request, section_name: str):
         "about": "about.html",
     }
     template = templates_map.get(section_name, "404.html")
+    print(f"Requested section: {section_name}, Template: {template}")
     return templates.TemplateResponse(template, {"request": request, "section": {"title": section_name}})
+
 
 
 @app.get("/info")
@@ -179,3 +180,63 @@ def get_platform_from_url(url: str):
         return "youtube"
     else:
         return "unknown"
+
+
+from fastapi.responses import JSONResponse
+
+@app.get("/movies")
+async def get_movies(url: str = Query(...)):
+    """
+    Obtiene la información de las películas desde la URL especificada y retorna los datos en formato JSON.
+    :param url: URL a scrapear
+    :return: Información de las películas en formato JSON
+    """
+    print(f"Obteniendo películas desde: {url}")
+    try:
+        # Encabezados para simular un navegador web
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+        
+        # Realizar la solicitud HTTP
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Lanza una excepción si ocurre un error
+        
+        # Parsear el contenido HTML
+        soup = BeautifulSoup(response.text, "html.parser")
+        
+        # Buscar los elementos de las películas
+        elementos = soup.find_all("a", href=True)
+        peliculas = []
+
+        for elemento in elementos:
+            # Verificar si contiene un <h2> con clase Title
+            titulo_tag = elemento.find("h2", class_="Title")
+            if not titulo_tag:
+                continue  # Saltar este elemento si no tiene título
+
+            titulo = titulo_tag.text.strip()
+            enlace = elemento["href"]
+            
+            # Obtener el año
+            year_tag = elemento.find("span", class_="Year")
+            year = year_tag.text.strip() if year_tag else "No especificado"
+            
+            # Obtener la URL de la imagen
+            img_tag = elemento.find("img")
+            img_url = img_tag["data-src"] if img_tag and "data-src" in img_tag.attrs else "No disponible"
+            
+            # Agregar la película a la lista
+            peliculas.append({
+                "titulo": titulo,
+                "enlace": enlace,
+                "año": year,
+                "imagen": img_url
+            })
+
+        return JSONResponse(content=peliculas)
+
+    except requests.RequestException as e:
+        return JSONResponse(content={"error": f"Error al realizar la solicitud: {str(e)}"})
+    except Exception as e:
+        return JSONResponse(content={"error": f"Error al procesar los datos: {str(e)}"})
