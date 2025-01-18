@@ -1,8 +1,265 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="movies-container">
+  <h1 class="movies-title">Biblioteca de Películas</h1>
+  <div class="movies-scroll">
+    <div id="movies-grid" class="movies-grid">
+      <!-- Las películas se cargarán dinámicamente -->
+    </div>
+  </div>
+</div>
 
-<p>Remix Section</p>
-<p>Bienvenido a la sección de Remix. Explora herramientas para mezclar tus contenidos.</p>
+<!-- Popup -->
+<div id="popup" class="popup hidden">
+  <div class="popup-content">
+    <span id="popup-close" class="popup-close">&times;</span>
+    <img id="popup-image" src="" alt="Imagen de la película">
+    <h3 id="popup-title"></h3>
+    <p id="popup-year"></p>
+    <p id="popup-rating"></p>
+    <p id="popup-duration"></p>
+    <p id="popup-quality"></p>
+    <p id="popup-genre"></p>
+    <p id="popup-description"></p>
+    <a id="popup-link" href="#" target="_blank" class="popup-button">Ver película</a>
+  </div>
+</div>
+
+<style>
+  /* Contenedor principal */
+  .movies-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .movies-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .movies-scroll {
+    width: 100%;
+    height: 80%;
+    overflow-y: auto;
+    padding-right: 10px;
+    border-radius: 10px;
+    background-color: #000;
+  }
+
+  .movies-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .movies-scroll::-webkit-scrollbar-thumb {
+    background: #e50914;
+    border-radius: 10px;
+  }
+
+  .movies-scroll::-webkit-scrollbar-thumb:hover {
+    background: #f40612;
+  }
+
+  .movies-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    padding: 10px;
+  }
+
+  .movie-card {
+    position: relative;
+    background-color: #111;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+
+  .movie-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .movie-card img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+  }
+
+  .movie-details {
+    padding: 10px;
+    text-align: center;
+  }
+
+  .movie-title {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+  }
+
+  .movie-year {
+    font-size: 0.8rem;
+    color: #bbb;
+  }
+
+  .popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .popup.hidden {
+    display: none;
+  }
+
+  .popup-content {
+    background-color: #111;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  }
+
+  .popup-content img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .popup-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+  }
+
+  .popup-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #e50914;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .popup-button:hover {
+    background-color: #f40612;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const moviesGrid = document.getElementById("movies-grid");
+    const popup = document.getElementById("popup");
+    const popupClose = document.getElementById("popup-close");
+    const popupImage = document.getElementById("popup-image");
+    const popupTitle = document.getElementById("popup-title");
+    const popupYear = document.getElementById("popup-year");
+    const popupRating = document.getElementById("popup-rating");
+    const popupDuration = document.getElementById("popup-duration");
+    const popupQuality = document.getElementById("popup-quality");
+    const popupGenre = document.getElementById("popup-genre");
+    const popupDescription = document.getElementById("popup-description");
+    const popupLink = document.getElementById("popup-link");
+
+    try {
+      const response = await fetch("/movies?url=https://zz.cuevana3.vip/biblioteca-peliculas/");
+      if (!response.ok) {
+        throw new Error("Error al obtener las películas.");
+      }
+
+      const movies = await response.json();
+
+      moviesGrid.innerHTML = "";
+
+      movies.forEach((movie) => {
+        const card = document.createElement("div");
+        card.className = "movie-card";
+
+        card.innerHTML = `
+          <img src="${movie.imagen}" alt="${movie.titulo}">
+          <div class="movie-details">
+            <h3 class="movie-title">${movie.titulo}</h3>
+            <p class="movie-year">${movie.año}</p>
+          </div>
+        `;
+
+        card.addEventListener("click", async () => {
+          try {
+            const scrapeResponse = await fetch("/scrape-movie", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ url: movie.enlace }),
+            });
+
+            if (!scrapeResponse.ok) {
+              throw new Error("Error al obtener los detalles de la película.");
+            }
+
+            const movieDetails = await scrapeResponse.json();
+
+            // Verificar que los datos se recibieron correctamente
+            console.log("Detalles de la película recibidos:");
+            console.log("Detalles de la película recibidos:", movieDetails);
+
+            // Actualizar el contenido del popup con los detalles obtenidos
+            popupImage.src = movieDetails["image_url"];
+            popupTitle.textContent = `Título: ${movieDetails["title"]}`;
+            popupYear.textContent = `Año: ${movieDetails["year"]}`;
+            popupRating.textContent = `Puntaje: ${movieDetails["votes"]}`;
+            popupDuration.textContent = `Duración: ${movieDetails["duration"]}`;
+            popupQuality.textContent = `Calidad: ${movieDetails["quality"]}`;
+            popupGenre.textContent = `Género: ${movieDetails["genre"]}`;
+            popupDescription.textContent = `Descripción: ${movieDetails["description"]}`;
+            popupLink.href = movieDetails.src;
+
+            popup.classList.remove("hidden");
+          } catch (error) {
+            console.error("Error al cargar detalles de la película:", error);
+            alert("No se pudieron cargar los detalles de la película. Inténtalo más tarde.");
+          }
+        });
+
+        moviesGrid.appendChild(card);
+      });
+
+      popupClose.addEventListener("click", () => {
+        popup.classList.add("hidden");
+      });
+
+      popup.addEventListener("click", (e) => {
+        if (e.target === popup) {
+          popup.classList.add("hidden");
+        }
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      moviesGrid.innerHTML = "<p>No se pudieron cargar las películas. Inténtalo más tarde.</p>";
+    }
+  });
+</script>
 
 {% endblock %}
