@@ -12,42 +12,37 @@
   <meta name="robots" content="index, follow">
   <title>{{ section.title if section else "gpradinett website" }}</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="./static/estilos.css">
+  <link rel="stylesheet" href="/static/estilos.css">
 </head>
 <body>
   <div class="container">
     <!-- Header -->
     <header>
-        <nav class="sidebar" aria-label="Main Navigation">
-          <ul>
-            <li class="nav-item {% if request.path == '/save' %}active{% endif %}">
-              <a href="/save"><i class="fas fa-download"></i><span>Save</span></a>
-            </li>
-            <li class="nav-item {% if request.path == '/remix' %}active{% endif %}">
-              <a href="/remix"><i class="fas fa-sync-alt"></i><span>Remix</span></a>
-            </li>
-          </ul>
-          <div class="sidebar-bottom">
-            <ul>
-              <li class="nav-item {% if request.path == '/settings' %}active{% endif %}">
-                <a href="/settings"><i class="fas fa-cog"></i><span>Settings</span></a>
-              </li>
-              <li class="nav-item {% if request.path == '/donate' %}active{% endif %}">
-                <a href="/donate"><i class="fas fa-heart"></i><span>Donate</span></a>
-              </li>
-              <li class="nav-item {% if request.path == '/updates' %}active{% endif %}">
-                <a href="/updates"><i class="fas fa-info-circle"></i><span>Updates</span></a>
-              </li>
-              <li class="nav-item {% if request.path == '/about' %}active{% endif %}">
-                <a href="/about"><i class="fas fa-question-circle"></i><span>About</span></a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-          
+      <nav class="sidebar" aria-label="Main Navigation">
+        <ul>
+          <li class="nav-item {% if request.path == '/v1/save' %}active{% endif %}">
+            <a href="/v1/save"><i class="fas fa-download"></i><span>Save</span></a>
+          </li>
+          <li class="nav-item {% if request.path == '/v1/remix' %}active{% endif %}">
+            <a href="/v1/remix"><i class="fas fa-sync-alt"></i><span>Remix</span></a>
+          </li>
+          <li class="nav-item {% if request.path == '/v1/settings' %}active{% endif %}">
+            <a href="/v1/settings"><i class="fas fa-cog"></i><span>Settings</span></a>
+          </li>
+          <li class="nav-item {% if request.path == '/v1/donate' %}active{% endif %}">
+            <a href="/v1/donate"><i class="fas fa-heart"></i><span>Donate</span></a>
+          </li>
+          <li class="nav-item {% if request.path == '/v1/updates' %}active{% endif %}">
+            <a href="/v1/updates"><i class="fas fa-info-circle"></i><span>Updates</span></a>
+          </li>
+          <li class="nav-item {% if request.path == '/v1/about' %}active{% endif %}">
+            <a href="/v1/about"><i class="fas fa-question-circle"></i><span>About</span></a>
+          </li>
+        </ul>
+      </nav>
     </header>
 
-    <!-- Main -->
+    <!-- Main Content -->
     <main role="main">
       {% block content %}
       {% endblock %}
@@ -59,11 +54,12 @@
       <p><a class="btn-shine">Made with Love ❤️</a></p>
     </footer>
   </div>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const pasteButton = document.getElementById("paste-btn");
       const inputField = document.getElementById("link-input");
-  
+
       pasteButton.addEventListener("click", async () => {
         try {
           const text = await navigator.clipboard.readText();
@@ -74,6 +70,6 @@
         }
       });
     });
-  </script>  
+  </script>
 </body>
 </html>
