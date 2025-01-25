@@ -22,7 +22,9 @@
     <p id="popup-quality"></p>
     <p id="popup-genre"></p>
     <p id="popup-description"></p>
-    <a id="popup-link" href="#" target="_blank" class="popup-button">Ver película</a>
+    <!-- Reproductor de video -->
+    <video id="popup-video" controls class="popup-video" style="width: 100%; margin-top: 10px;"></video>
+    <a id="popup-link" href="#" target="_blank" class="popup-button">Ver en página completa</a>
   </div>
 </div>
 
@@ -166,6 +168,12 @@
   .popup-button:hover {
     background-color: #f40612;
   }
+
+  .popup-video {
+    border-radius: 10px;
+    outline: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  }
 </style>
 
 <script>
@@ -181,6 +189,7 @@
     const popupQuality = document.getElementById("popup-quality");
     const popupGenre = document.getElementById("popup-genre");
     const popupDescription = document.getElementById("popup-description");
+    const popupVideo = document.getElementById("popup-video");
     const popupLink = document.getElementById("popup-link");
 
     try {
@@ -222,7 +231,6 @@
             const movieDetails = await scrapeResponse.json();
 
             // Verificar que los datos se recibieron correctamente
-            console.log("Detalles de la película recibidos:");
             console.log("Detalles de la película recibidos:", movieDetails);
 
             // Actualizar el contenido del popup con los detalles obtenidos
@@ -234,7 +242,8 @@
             popupQuality.textContent = `Calidad: ${movieDetails["quality"]}`;
             popupGenre.textContent = `Género: ${movieDetails["genre"]}`;
             popupDescription.textContent = `Descripción: ${movieDetails["description"]}`;
-            popupLink.href = movieDetails.src;
+            popupVideo.src = movieDetails["src"]; // Fuente del video
+            popupLink.href = movieDetails["src"]; // Enlace para página completa
 
             popup.classList.remove("hidden");
           } catch (error) {
@@ -248,11 +257,13 @@
 
       popupClose.addEventListener("click", () => {
         popup.classList.add("hidden");
+        popupVideo.pause(); // Detener el video cuando se cierra el popup
       });
 
       popup.addEventListener("click", (e) => {
         if (e.target === popup) {
           popup.classList.add("hidden");
+          popupVideo.pause(); // Detener el video cuando se cierra el popup
         }
       });
     } catch (error) {
@@ -261,5 +272,4 @@
     }
   });
 </script>
-
 {% endblock %}
