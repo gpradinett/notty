@@ -6,6 +6,7 @@
   <div class="movies-scroll">
     <div id="movies-grid" class="movies-grid">
       <!-- Las películas se cargarán dinámicamente -->
+       
     </div>
   </div>
 </div>
@@ -14,17 +15,29 @@
 <div id="popup" class="popup hidden">
   <div class="popup-content">
     <span id="popup-close" class="popup-close">&times;</span>
-    <img id="popup-image" src="" alt="Imagen de la película">
-    <h3 id="popup-title"></h3>
-    <p id="popup-year"></p>
-    <p id="popup-rating"></p>
-    <p id="popup-duration"></p>
-    <p id="popup-quality"></p>
-    <p id="popup-genre"></p>
-    <p id="popup-description"></p>
-    <!-- Reproductor de video -->
-    <video id="popup-video" controls class="popup-video" style="width: 100%; margin-top: 10px;"></video>
-    <a id="popup-link" href="#" target="_blank" class="popup-button">Ver en página completa</a>
+    <div class="popup-header">
+      <!-- Imagen con placeholder -->
+      <div class="popup-image-container">
+        <img id="popup-image" src="" alt="Imagen de la película" class="popup-image" onerror="this.src='https://via.placeholder.com/150x200'; this.classList.add('placeholder')">
+      </div>
+      <div class="popup-header-text">
+        <h3 id="popup-title" class="popup-title"></h3>
+        <div class="popup-meta">
+          <p id="popup-year" class="popup-meta-item"></p>
+          <p id="popup-rating" class="popup-meta-item"></p>
+          <p id="popup-duration" class="popup-meta-item"></p>
+          <p id="popup-quality" class="popup-meta-item"></p>
+          <p id="popup-genre" class="popup-meta-item"></p>
+          <p id="popup-description" class="popup-description"></p>
+        </div>
+      </div>
+    </div>
+    <div class="popup-body">
+
+      <!-- Reproductor de video -->
+      <iframe id="popup-iframe" src="" class="popup-video" allowfullscreen></iframe>
+      <a id="popup-link" href="#" target="_blank" class="popup-button">Ver en página completa</a>
+    </div>
   </div>
 </div>
 
@@ -46,6 +59,7 @@
     font-size: 2rem;
     margin-bottom: 20px;
     text-align: center;
+    color: #e50914;
   }
 
   .movies-scroll {
@@ -78,13 +92,38 @@
   }
 
   .movie-card {
-    position: relative;
-    background-color: #111;
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-  }
+  position: relative;
+  background-color: #111;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  min-height: 350px; /* Altura mínima para mantener consistencia */
+}
+
+.movie-card-image {
+  width: 100%;
+  height: 240px;
+  background-color: #2c2c2c; /* Fondo de respaldo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.movie-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* Placeholder para imágenes faltantes */
+.movie-card img.placeholder {
+  width: 100px;
+  height: 100px;
+  opacity: 0.5;
+  object-fit: contain;
+}
 
   .movie-card:hover {
     transform: scale(1.05);
@@ -130,50 +169,116 @@
   }
 
   .popup-content {
-    background-color: #111;
-    padding: 20px;
-    border-radius: 10px;
+    background-color: #1e1e1e;
+    padding: 30px;
+    border-radius: 15px;
     color: white;
-    max-width: 500px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  }
-
-  .popup-content img {
-    width: 100%;
-    border-radius: 10px;
-    margin-bottom: 10px;
+    max-width: 80%;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .popup-close {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
     font-size: 1.5rem;
     cursor: pointer;
     color: white;
+    transition: color 0.3s ease;
+  }
+
+  .popup-close:hover {
+    color: #e50914;
+  }
+
+  .popup-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .popup-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover; /* Asegura que la imagen cubra el contenedor */
+}
+
+  .popup-header-text {
+    flex: 1;
+  }
+
+  .popup-title {
+    font-size: 1.8rem;
+    margin: 0;
+    color: #e50914;
+  }
+
+  .popup-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .popup-meta-item {
+    background-color: #2c2c2c;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #ddd;
+  }
+
+  .popup-body {
+    margin-top: 20px;
+  }
+
+  .popup-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #ddd;
+    margin-bottom: 20px;
+  }
+
+  .popup-video {
+    width: 100%;
+    height: 300px;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: #000;
   }
 
   .popup-button {
     display: inline-block;
-    margin-top: 10px;
     padding: 10px 20px;
     background-color: #e50914;
     color: white;
     text-decoration: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
+    font-size: 1rem;
   }
 
   .popup-button:hover {
     background-color: #f40612;
   }
 
-  .popup-video {
+  .popup-image-container {
+    width: 150px;
+    height: 200px;
     border-radius: 10px;
-    outline: none;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    margin-right: 20px;
+    background-color: #2c2c2c; /* Fondo de respaldo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Evita que la imagen se desborde */
   }
+
+  
 </style>
 
 <script>
@@ -189,7 +294,7 @@
     const popupQuality = document.getElementById("popup-quality");
     const popupGenre = document.getElementById("popup-genre");
     const popupDescription = document.getElementById("popup-description");
-    const popupVideo = document.getElementById("popup-video");
+    const popupIframe = document.getElementById("popup-iframe");
     const popupLink = document.getElementById("popup-link");
 
     try {
@@ -207,7 +312,9 @@
         card.className = "movie-card";
 
         card.innerHTML = `
-          <img src="${movie.imagen}" alt="${movie.titulo}">
+          <div class="movie-card-image">
+            <img src="${movie.imagen}" alt="${movie.titulo}" onerror="this.src='https://via.placeholder.com/150x200'; this.classList.add('placeholder')">
+          </div>
           <div class="movie-details">
             <h3 class="movie-title">${movie.titulo}</h3>
             <p class="movie-year">${movie.año}</p>
@@ -230,20 +337,17 @@
 
             const movieDetails = await scrapeResponse.json();
 
-            // Verificar que los datos se recibieron correctamente
-            console.log("Detalles de la película recibidos:", movieDetails);
-
             // Actualizar el contenido del popup con los detalles obtenidos
-            popupImage.src = movieDetails["image_url"];
-            popupTitle.textContent = `Título: ${movieDetails["title"]}`;
+            popupImage.src = movieDetails.image_url || 'https://via.placeholder.com/150x200'; // Fallback adicional
+            popupTitle.textContent = movieDetails["title"];
             popupYear.textContent = `Año: ${movieDetails["year"]}`;
-            popupRating.textContent = `Puntaje: ${movieDetails["votes"]}`;
+            popupRating.textContent = `Puntaje: ${movieDetails["rating"]}`;
             popupDuration.textContent = `Duración: ${movieDetails["duration"]}`;
             popupQuality.textContent = `Calidad: ${movieDetails["quality"]}`;
             popupGenre.textContent = `Género: ${movieDetails["genre"]}`;
-            popupDescription.textContent = `Descripción: ${movieDetails["description"]}`;
-            popupVideo.src = movieDetails["src"]; // Fuente del video
-            popupLink.href = movieDetails["src"]; // Enlace para página completa
+            popupDescription.textContent = movieDetails["description"];
+            popupIframe.src = movieDetails["source_url"];
+            popupLink.href = movieDetails["source_url"];
 
             popup.classList.remove("hidden");
           } catch (error) {
@@ -257,13 +361,13 @@
 
       popupClose.addEventListener("click", () => {
         popup.classList.add("hidden");
-        popupVideo.pause(); // Detener el video cuando se cierra el popup
+        popupIframe.src = ""; // Limpiar el iframe al cerrar el popup
       });
 
       popup.addEventListener("click", (e) => {
         if (e.target === popup) {
           popup.classList.add("hidden");
-          popupVideo.pause(); // Detener el video cuando se cierra el popup
+          popupIframe.src = ""; // Limpiar el iframe al cerrar el popup
         }
       });
     } catch (error) {
