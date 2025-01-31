@@ -240,3 +240,81 @@ async def get_movies(url: str = Query(...)):
         return JSONResponse(content={"error": f"Error al realizar la solicitud: {str(e)}"})
     except Exception as e:
         return JSONResponse(content={"error": f"Error al procesar los datos: {str(e)}"})
+
+
+from pydantic import BaseModel
+
+# Modelo para recibir la URL
+class MovieURL(BaseModel):
+    url: str
+
+@app.post("/scrape-movie")
+async def scrape_movie(movie: MovieURL):
+    url = movie.url
+    print(f"Obteniendo información de la película desde: {url}")
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, "html.parser")
+        article = soup.find("article", class_="TPost inlist movtv-info cont")
+
+        if article:
+            img = article.find("img", {"itemprop": "image"})
+            img_url = img["src"] if img else "No disponible"
+
+            title_tag = article.find("h1", class_="Title")
+            title = title_tag.text.strip() if title_tag else "No disponible"
+
+            votes_tag = article.find("div", {"id": "TPVotes"})
+            votes = votes_tag["data-percent"] if votes_tag else "No disponible"
+
+            meta_tags = article.find("p", class_="meta")
+            meta_info = [span.text for span in meta_tags.find_all("span")] if meta_tags else []
+            duration = meta_info[0] if len(meta_info) > 0 else "No disponible"
+            year = meta_info[1] if len(meta_info) > 1 else "No disponible"
+            quality = meta_info[2] if len(meta_info) > 2 else "No disponible"
+
+            description_tag = article.find("div", class_="Description")
+            description = description_tag.find("p").text.strip() if description_tag else "No disponible"
+
+            genre_tag = article.find("li", class_="AAIco-adjust")
+            genre = genre_tag.find("a").text.strip() if genre_tag else "No disponible"
+
+            # Buscar el div con la clase TPlayerTb Current y extraer el iframe
+            player_div = soup.find("div", class_="TPlayerTb Current")
+        
+            if player_div:
+                iframe = player_div.find("iframe")
+                iframe_src = iframe["src"] if iframe else "No disponible"
+                data_src = iframe["data-src"] if iframe and "data-src" in iframe.attrs else "No disponible"
+                                # Imprimir resultados
+                print(f"Título: {title}")
+                print(f"URL de la imagen: {img_url}")
+                print(f"Puntaje: {votes}")
+                print(f"Duración: {duration}")
+                print(f"Año: {year}")
+                print(f"Calidad: {quality}")
+                print(f"Género: {genre}")
+                print(f"Descripción: {description}")
+                print(f"src: {data_src}")
+                print(f"data-src: {data_src}")
+                
+                return {
+                    "title": title,
+                    "image_url": img_url,
+                    "rating": votes,
+                    "duration": duration,
+                    "year": year,
+                    "quality": quality,
+                    "genre": genre,
+                    "description": description,
+                    "source_url": data_src,
+                }
+            else:
+                return {"error": "No se encontró el artículo con la clase especificada."}
+        else:
+            return {"error": f"Error al acceder a la página. Código de estado: {response.status_code}"}
