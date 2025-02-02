@@ -318,8 +318,3 @@ async def scrape_movie(movie: MovieURL):
                 return {"error": "No se encontró el artículo con la clase especificada."}
         else:
             return {"error": f"Error al acceder a la página. Código de estado: {response.status_code}"}
-
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))  # Usa el puerto que Render asigna o el 8000 por defecto
-    uvicorn.run(app, host="0.0.0.0", port=port)
