@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from fastapi.requests import Request
@@ -79,8 +79,8 @@ async def page(request: Request, url: str = Query(None)):
     })
 
 
-@app.get("/tiktok")
-async def tiktok(url: str = Query(...)):
+@app.post("/tiktok")
+async def tiktok(url: str = Form(...)):
     try:
         print (f"Url Obtenida: {url}")
         with yt_dlp.YoutubeDL({"noplaylist": True}) as ydl:
@@ -318,3 +318,7 @@ async def scrape_movie(movie: MovieURL):
                 return {"error": "No se encontró el artículo con la clase especificada."}
         else:
             return {"error": f"Error al acceder a la página. Código de estado: {response.status_code}"}
+        
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))  # Usa el puerto que Render asigna o el 8000 por defecto
+    uvicorn.run(app, host="0.0.0.0", port=port)
