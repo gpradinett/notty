@@ -84,12 +84,25 @@ async def page(request: Request, url: str = Query(None)):
     })
 
 
+
+COOKIES_PATH = os.path.join(os.getcwd(), "static", "cookies.txt")
+
+# Verificar si el archivo existe antes de usarlo
+if os.path.exists(COOKIES_PATH):
+    print(f"✅ Archivo de cookies encontrado en: {COOKIES_PATH}")
+else:
+    print(f"❌ Archivo de cookies NO encontrado en: {COOKIES_PATH}")
+
 @app.post("/tiktok")
 async def tiktok(url: str = Form(...)):
     try:
-        print (f"Url Obtenida: {url}")
-        with yt_dlp.YoutubeDL({"noplaylist": True}) as ydl:
-            
+        print(f"Url Obtenida: {url}")
+        ydl_opts = {
+            "noplaylist": True,
+            "cookies": COOKIES_PATH  # Ruta absoluta del archivo de cookies
+        }
+
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(url, download=False)
             thumbnail_url = info_dict.get("thumbnail")
             video_title = info_dict.get("title", "TikTok Video")
@@ -98,15 +111,15 @@ async def tiktok(url: str = Form(...)):
             
             mp4_formats = formats(all_formats)
 
-        return {"clean_video_title" : clean_video_title,
-                "thumbnail_url" : thumbnail_url,
-                "Url" : url,
-                "mp4_formats": mp4_formats,
-                }
-    
-    except Exception as e:
-        raise (e)
+        return {
+            "clean_video_title": clean_video_title,
+            "thumbnail_url": thumbnail_url,
+            "Url": url,
+            "mp4_formats": mp4_formats,
+        }
 
+    except Exception as e:
+        raise e
 
 @app.get("/download")
 async def download(url: str = Query(...), clean_video_title: str = Query):
@@ -218,7 +231,7 @@ async def get_movies(url: str = Query(..., description="URL de la página de pel
             return JSONResponse(content={"error": "No se encontraron películas en la página."}, status_code=404)
 
         peliculas = []
-        max_peliculas = 10  # Limitar la cantidad de resultados
+        max_peliculas = 20  # Limitar la cantidad de resultados
 
         for elemento in elementos:
             if len(peliculas) >= max_peliculas:  # Detener si ya se alcanzó el límite
