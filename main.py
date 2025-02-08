@@ -190,48 +190,53 @@ def get_platform_from_url(url: str):
 from fastapi.responses import JSONResponse
 
 @app.get("/movies")
-async def get_movies(url: str = Query(...)):
+async def get_movies(url: str = Query(..., description="URL de la página de películas")):
     """
     Obtiene la información de las películas desde la URL especificada y retorna los datos en formato JSON.
     :param url: URL a scrapear
     :return: Información de las películas en formato JSON
     """
     print(f"Obteniendo películas desde: {url}")
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
+
     try:
-        # Encabezados para simular un navegador web
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-        }
+        # Usar una sesión para evitar bloqueos y mejorar eficiencia
+        with requests.Session() as session:
+            response = session.get(url, headers=headers, timeout=10)  # Agregar timeout de 10 segundos
+            response.raise_for_status()  # Lanza un error si el request falla
         
-        # Realizar la solicitud HTTP
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Lanza una excepción si ocurre un error
-        
-        # Parsear el contenido HTML
+        # Parsear el HTML
         soup = BeautifulSoup(response.text, "html.parser")
-        
+
         # Buscar los elementos de las películas
         elementos = soup.find_all("a", href=True)
+
+        if not elementos:  # Verificar si la página devuelve elementos
+            return JSONResponse(content={"error": "No se encontraron películas en la página."}, status_code=404)
+
         peliculas = []
+        max_peliculas = 10  # Limitar la cantidad de resultados
 
         for elemento in elementos:
-            # Verificar si contiene un <h2> con clase Title
+            if len(peliculas) >= max_peliculas:  # Detener si ya se alcanzó el límite
+                break
+
             titulo_tag = elemento.find("h2", class_="Title")
             if not titulo_tag:
-                continue  # Saltar este elemento si no tiene título
+                continue  # Saltar elementos sin título
 
             titulo = titulo_tag.text.strip()
             enlace = elemento["href"]
-            
-            # Obtener el año
+
             year_tag = elemento.find("span", class_="Year")
             year = year_tag.text.strip() if year_tag else "No especificado"
-            
-            # Obtener la URL de la imagen
+
             img_tag = elemento.find("img")
             img_url = img_tag["data-src"] if img_tag and "data-src" in img_tag.attrs else "No disponible"
-            
-            # Agregar la película a la lista
+
             peliculas.append({
                 "titulo": titulo,
                 "enlace": enlace,
@@ -241,11 +246,12 @@ async def get_movies(url: str = Query(...)):
 
         return JSONResponse(content=peliculas)
 
+    except requests.Timeout:
+        return JSONResponse(content={"error": "La solicitud tardó demasiado y fue cancelada."}, status_code=408)
     except requests.RequestException as e:
-        return JSONResponse(content={"error": f"Error al realizar la solicitud: {str(e)}"})
+        return JSONResponse(content={"error": f"Error en la solicitud: {str(e)}"}, status_code=500)
     except Exception as e:
-        return JSONResponse(content={"error": f"Error al procesar los datos: {str(e)}"})
-
+        return JSONResponse(content={"error": f"Error en el procesamiento: {str(e)}"}, status_code=500)
 
 from pydantic import BaseModel
 
