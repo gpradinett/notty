@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Query, Form
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.requests import Request
 import yt_dlp
 import re, os
@@ -20,6 +20,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 DOWNLOAD_PATH = "./downloads"
 if not os.path.exists(DOWNLOAD_PATH):
     os.makedirs(DOWNLOAD_PATH)
+
+# Redirigir /v1/ a /v1/save
+@app.get("/", response_class=RedirectResponse)
+async def redirect_to_save():
+    return RedirectResponse(url="/v1/save")
 
 # Ruta dinámica para diferentes secciones
 @app.get("/v1/{section_name}", response_class=HTMLResponse)
