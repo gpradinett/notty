@@ -97,11 +97,22 @@ else:
 
 from urllib.parse import urlparse
 
+# Función para seguir la redirección en caso de que sea una URL 'vm.tiktok.com'
+def get_full_tiktok_url(url: str) -> str:
+    if "vm.tiktok.com" in url:
+        # Seguir la redirección usando requests
+        response = requests.get(url, allow_redirects=True)
+        return response.url  # Devolver la URL final después de la redirección
+    return url  # Si no es una URL 'vm.tiktok.com', devolver la URL tal cual
 
 @app.post("/verify")
 async def tiktok(url: str = Form(...)):
     print(f"URL obtenida: {url}")
-    dominios_permitidos = ["facebook.com", "tiktok.com", "instagram.com"]
+    dominios_permitidos = ["facebook.com", "tiktok.com", "instagram.com", "vm.tiktok.com", "youtube.com", "youtu.be"]
+    
+    # Verificar si la URL es de TikTok y seguir la redirección si es necesario
+    url = get_full_tiktok_url(url)
+    print(f"URL completa: {url}")
     
     # Extraer el dominio de la URL
     dominio = urlparse(url).netloc 
@@ -112,29 +123,10 @@ async def tiktok(url: str = Form(...)):
         try:
             # Obtener la URL del video descargado
             video_path = get_downloader(url)
-            print(f"Video descargado desde: {video_path}")
-
-            # Obtener el directorio actual de trabajo
-            current_working_directory = os.getcwd()
-            print(f"Directorio de trabajo actual: {current_working_directory}")
-            
-            # Eliminar "Resultado: " y unir correctamente la ruta
-            clean_video_path = video_path.replace("Resultado: ", "")
-            abs_video_path = os.path.join(current_working_directory, clean_video_path.lstrip('./'))
-            print(f"Ruta absoluta del archivo: {abs_video_path}")
-                        
-            # Verificar si el archivo existe
-            if not os.path.exists(abs_video_path):
-                print(f"El archivo no existe en la ruta: {abs_video_path}")
-                raise HTTPException(status_code=404, detail="El archivo descargado no existe.")
-            
-            # Verificar si el archivo es accesible
-            if not os.access(abs_video_path, os.R_OK):
-                print(f"El archivo no es accesible: {abs_video_path}")
-                raise HTTPException(status_code=500, detail="El archivo no es accesible.")
+            # print(f"Video descargado desde: {video_path}")                     
 
             # Enviar la URL como respuesta para ser usada en el frontend
-            video_url = f"/downloads/{os.path.basename(abs_video_path)}"
+            video_url = f"/downloads/{os.path.basename(video_path)}"
             return {"video_url": video_url}
 
         except Exception as e:
@@ -142,6 +134,7 @@ async def tiktok(url: str = Form(...)):
             raise HTTPException(status_code=500, detail=f"Error al procesar el video: {str(e)}")
     else:
         return {"message": "Unsupported URL"}
+
 
 """
 @app.post("/tiktok")

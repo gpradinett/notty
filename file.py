@@ -29,6 +29,9 @@ class Downloader(ABC):
         print("Operación común a todos los descargadores")
         product = self.factory_method(url)
         result = f"Resultado: {product.operation()}"
+        print("Operación común a todos los descargadores0" , result)
+        result1 = product.operation()
+        print("Operación común a todos los descargadores1", result1)
         return result
     
     
@@ -37,12 +40,12 @@ class Downloader(ABC):
         Método para sanitizar el nombre del archivo, reemplazando caracteres no válidos.
         """
         filename = filename[:100]
-        print(f"Nombre 0.1 del archivo original: {filename}")
+        #print(f"Nombre 0.1 del archivo original: {filename}")
         filename = filename.replace('#', '_')
         filename = re.sub(r"[^\w\s-]", "", filename)
-        print(f"Nombre 0 del archivo sanitizado: {filename}")
+        #print(f"Nombre 0 del archivo sanitizado: {filename}")
         ulti =  re.sub(r"[\s-]+", "_", filename)
-        print(f"Nombre 1 del archivo sanitizado: {ulti}")
+        #print(f"Nombre 1 del archivo sanitizado: {ulti}")
         return ulti
 
 
