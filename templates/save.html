@@ -341,27 +341,61 @@
   }
 </style>
 <div class="content">
-    <div class="card">
-      <img
-        src="https://uiverse.io/astronaut.png"
-        alt=""
-        class="image"
-      />
-      <div class="heading"></div>
-      <div class="icons">
+  <div class="card">
+    <img
+      src="https://uiverse.io/astronaut.png"
+      alt=""
+      class="image"
+    />
+    <div class="heading"></div>
+    <div class="icons">
+    </div>
+  </div>
+
+  <!-- Formulario para ingresar la URL -->
+  <form id="link-form" method="POST" action="/verify">
+      <div class="input-box">
+          <input type="text" id="link-input" name="url" placeholder="Pega el enlace aquí">
+          <button type="button" id="paste-btn" onclick="handlePaste()">Pegar</button>
       </div>
-    </div>
-    <form id="link-form" method="POST" action="/tiktok">
-    <div class="input-box">
-      <input type="text" id="link-input" name="url" placeholder="Paste the link here">
-      <button type="button" id="paste-btn" onclick="handlePaste()">Paste</button>
-    </div>
-    <div class="options">
-      <button type="submit" id="send-btn">Enviar</button>
-      <button>Auto</button>
-      <button>Audio</button>
-      <button>Mute</button>
-    </div>
-    </div>
+      <div class="options">
+          <button type="submit" id="send-btn">Enviar</button>
+          <button>Auto</button>
+          <button>Audio</button>
+          <button>Mute</button>
+      </div>
   </form>
+
+  <!-- Esta sección mostrará el enlace de descarga -->
+  <div id="download-link" style="display: none;">
+      <!-- El enlace se actualizará aquí -->
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('link-form');
+  form.onsubmit = async function(event) {
+      event.preventDefault();  // Prevenir el comportamiento predeterminado del formulario
+      const url = document.getElementById('link-input').value;  // Obtener la URL del input
+      
+      // Enviar la URL al backend para iniciar la descarga
+      const response = await fetch('/verify', {
+          method: 'POST',
+          body: new URLSearchParams({ url }),  // Enviar la URL
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      });
+      
+      const data = await response.json();
+      
+      // Verificar si la descarga fue exitosa
+      if (data.video_url) {
+          const downloadLink = document.getElementById('download-link');
+          downloadLink.style.display = 'block';  // Hacer visible el enlace
+          downloadLink.innerHTML = `<a href="${data.video_url}" download>Descargar Video</a>`;
+      } else {
+          alert("Hubo un error al descargar el video.");
+      }
+  };
+</script>
+
 {% endblock %}

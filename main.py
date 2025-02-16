@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query, Form
+from fastapi import FastAPI, Query, Form, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.requests import Request
@@ -7,14 +7,15 @@ import re, os
 from fastapi.staticfiles import StaticFiles
 import requests
 from bs4 import BeautifulSoup
-
+from file import get_downloader 
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
 # Directorio de plantillas HTML
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
+app.mount("/downloads", StaticFiles(directory="./downloads"), name="downloads")
 
 # Ruta de descarga temporal
 DOWNLOAD_PATH = "./downloads"
@@ -93,6 +94,56 @@ if os.path.exists(COOKIES_PATH):
 else:
     print(f"❌ Archivo de cookies NO encontrado en: {COOKIES_PATH}")
 
+
+from urllib.parse import urlparse
+
+
+@app.post("/verify")
+async def tiktok(url: str = Form(...)):
+    print(f"URL obtenida: {url}")
+    dominios_permitidos = ["facebook.com", "tiktok.com", "instagram.com"]
+    
+    # Extraer el dominio de la URL
+    dominio = urlparse(url).netloc 
+    # Eliminar el "www." si está presente
+    dominio = dominio.replace("www.", "")
+    
+    if dominio in dominios_permitidos:
+        try:
+            # Obtener la URL del video descargado
+            video_path = get_downloader(url)
+            print(f"Video descargado desde: {video_path}")
+
+            # Obtener el directorio actual de trabajo
+            current_working_directory = os.getcwd()
+            print(f"Directorio de trabajo actual: {current_working_directory}")
+            
+            # Eliminar "Resultado: " y unir correctamente la ruta
+            clean_video_path = video_path.replace("Resultado: ", "")
+            abs_video_path = os.path.join(current_working_directory, clean_video_path.lstrip('./'))
+            print(f"Ruta absoluta del archivo: {abs_video_path}")
+                        
+            # Verificar si el archivo existe
+            if not os.path.exists(abs_video_path):
+                print(f"El archivo no existe en la ruta: {abs_video_path}")
+                raise HTTPException(status_code=404, detail="El archivo descargado no existe.")
+            
+            # Verificar si el archivo es accesible
+            if not os.access(abs_video_path, os.R_OK):
+                print(f"El archivo no es accesible: {abs_video_path}")
+                raise HTTPException(status_code=500, detail="El archivo no es accesible.")
+
+            # Enviar la URL como respuesta para ser usada en el frontend
+            video_url = f"/downloads/{os.path.basename(abs_video_path)}"
+            return {"video_url": video_url}
+
+        except Exception as e:
+            print(f"Error al procesar el video: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Error al procesar el video: {str(e)}")
+    else:
+        return {"message": "Unsupported URL"}
+
+"""
 @app.post("/tiktok")
 async def tiktok(url: str = Form(...)):
     try:
@@ -120,6 +171,8 @@ async def tiktok(url: str = Form(...)):
 
     except Exception as e:
         raise e
+"""
+
 
 @app.get("/download")
 async def download(url: str = Query(...), clean_video_title: str = Query):
