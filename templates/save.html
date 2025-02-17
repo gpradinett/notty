@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 20px 10px;
+  margin: 100px 10px;
   max-height: 80vh;
   overflow-y: auto;
 }
@@ -66,7 +66,7 @@
   align-items: center;
   margin: 20px 0;
   flex-wrap: nowrap;
-  width: 60%;
+  width: 100%;
 }
 
 .input-box input {
@@ -339,6 +339,86 @@
   opacity: 0;
   }
   }
+
+
+    /* Animación de carga */
+  .center_div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+}
+
+.wave {
+  width: 1.8rem;
+  height: 150px;
+  background-color: #ff6b6b;
+  margin: 0 14px;
+  border-radius: 0.4rem;
+  animation: wave 1.5s linear infinite;
+  transform-origin: center;
+  opacity: 0; /* Inicialmente invisible */
+}
+
+@keyframes wave {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+    filter: hue-rotate(90deg) blur(100px);
+  }
+  25% {
+    transform: scale(0.5);
+    opacity: 1;
+    filter: hue-rotate(120deg) blur(50px);
+  }
+  50% {
+    transform: scale(1);
+    filter: hue-rotate(180deg) blur(25px);
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+    filter: hue-rotate(0deg) blur(0);
+  }
+}
+
+.wave:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.wave:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.wave:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.wave:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+.wave:nth-child(6) {
+  animation-delay: 0.5s;
+}
+
+.wave:nth-child(7) {
+  animation-delay: 0.6s;
+}
+
+.wave:nth-child(8) {
+  animation-delay: 0.7s;
+}
+
+.wave:nth-child(9) {
+  animation-delay: 0.8s;
+}
+
+.wave:nth-child(10) {
+  animation-delay: 0.9s;
+}
+
+
 </style>
 <div class="content">
   <div class="card">
@@ -356,7 +436,7 @@
   <form id="link-form" method="POST" action="/verify">
       <div class="input-box">
           <input type="text" id="link-input" name="url" placeholder="Pega el enlace aquí">
-          <button type="button" id="paste-btn" onclick="handlePaste()">Pegar</button>
+          <button type="button" id="action-btn" onclick="handlePaste()">Pegar</button>
       </div>
       <div class="options">
           <button type="submit" id="send-btn">Enviar</button>
@@ -366,6 +446,20 @@
       </div>
   </form>
 
+  <!-- Animación de carga (oculta por defecto) -->
+  <div id="loading" class="center_div" style="display: none;">
+    <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  </div>
+
   <!-- Esta sección mostrará el enlace de descarga -->
   <div id="download-link" style="display: none;">
       <!-- El enlace se actualizará aquí -->
@@ -374,27 +468,57 @@
 
 <script>
   const form = document.getElementById('link-form');
+  const loadingDiv = document.getElementById('loading');
+  const downloadLinkDiv = document.getElementById('download-link');
+  const actionBtn = document.getElementById('action-btn');
+  const linkInput = document.getElementById('link-input');
+
+  function handlePaste() {
+    navigator.clipboard.readText().then(text => {
+      linkInput.value = text;
+      actionBtn.textContent = 'Borrar';
+      actionBtn.onclick = handleClear;
+    });
+  }
+
+  function handleClear() {
+    linkInput.value = '';
+    actionBtn.textContent = 'Pegar';
+    actionBtn.onclick = handlePaste;
+  }
+
   form.onsubmit = async function(event) {
-      event.preventDefault();  // Prevenir el comportamiento predeterminado del formulario
-      const url = document.getElementById('link-input').value;  // Obtener la URL del input
-      
-      // Enviar la URL al backend para iniciar la descarga
+    event.preventDefault();  // Evitar que el formulario se envíe normalmente
+
+    const url = document.getElementById('link-input').value;  // Obtener la URL
+    
+    // Mostrar animación de carga
+    loadingDiv.style.display = 'flex';
+    downloadLinkDiv.style.display = 'none';
+
+    try {
       const response = await fetch('/verify', {
-          method: 'POST',
-          body: new URLSearchParams({ url }),  // Enviar la URL
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        method: 'POST',
+        body: new URLSearchParams({ url }),  // Enviar la URL
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
-      
+
       const data = await response.json();
-      
+
+      // Ocultar animación de carga
+      loadingDiv.style.display = 'none';
+
       // Verificar si la descarga fue exitosa
       if (data.video_url) {
-          const downloadLink = document.getElementById('download-link');
-          downloadLink.style.display = 'block';  // Hacer visible el enlace
-          downloadLink.innerHTML = `<a href="${data.video_url}" download>Descargar Video</a>`;
+        downloadLinkDiv.style.display = 'block';
+        downloadLinkDiv.innerHTML =  `<a href="${data.video_url}" download class="neu-button">Descargar Video</a>`;
       } else {
-          alert("Hubo un error al descargar el video.");
+        alert("Hubo un error al descargar el video.");
       }
+    } catch (error) {
+      loadingDiv.style.display = 'none';
+      alert("Error en la solicitud.");
+    }
   };
 </script>
 
