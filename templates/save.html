@@ -134,7 +134,7 @@
   row-gap: 1em;
   }
   .card img {
-  width: 16em;
+  width: 15em;
   margin-right: 0em;
   animation: move 10s ease-in-out infinite;
   z-index: 5;
@@ -351,7 +351,7 @@
 
 .wave {
   width: 1.8rem;
-  height: 150px;
+  height: 100px;
   background-color: #ff6b6b;
   margin: 0 14px;
   border-radius: 0.4rem;
@@ -418,6 +418,10 @@
   animation-delay: 0.9s;
 }
 
+/*estilo para el boton de descarga */
+#download-link {
+  margin-top: 20px; /* Ajusta el margen superior según sea necesario */
+}
 
 </style>
 <div class="content">
@@ -510,6 +514,7 @@
 
       // Verificar si la descarga fue exitosa
       if (data.video_url) {
+        const downloadLinkDiv = document.getElementById("download-link");
         downloadLinkDiv.style.display = 'block';
         downloadLinkDiv.innerHTML =  `<a href="${data.video_url}" download class="neu-button">Descargar Video</a>`;
       } else {

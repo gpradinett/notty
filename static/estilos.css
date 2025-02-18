@@ -198,14 +198,14 @@ nav .nav-item:hover {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 0px;
+    gap: 10px;
   }
 
   footer {
     max-width: 100%;
     margin-left: 0;
     border-radius: 0;
-    padding: 25px;
+    padding: 50px;
   }
 }
 
