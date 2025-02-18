@@ -91,10 +91,10 @@ nav ul {
 }
 
 nav .nav-item {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   text-align: center;
-  margin: 10px 0;
+  margin: 5px 0;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -205,6 +205,7 @@ nav .nav-item:hover {
     max-width: 100%;
     margin-left: 0;
     border-radius: 0;
+    padding: 25px;
   }
 }
 
