@@ -451,8 +451,8 @@
   }
 
 
-  /* Estilo del popup */
-  .popup {
+/* Estilo del popup */
+.popup {
     display: none; /* Oculto por defecto */
     position: fixed;
     z-index: 1000;
@@ -460,30 +460,89 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    animation: fadeIn var(--transition-speed);
 }
 
 /* Contenido del popup */
 .popup-content {
-    background: rgb(3, 3, 3);
-    padding: 20px;
-    border-radius: 10px;
-    /* text-align: center; */
+    background: linear-gradient(135deg, var(--secondary-bg), var(--primary-bg));
+    padding: 25px;
+    border-radius: 15px;
     position: absolute;
-    top: 40%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 300px;
-    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+    width: 315px;
+    box-shadow: 0px 0px 15px rgba(152, 11, 240, 0.6);
+    border: 1px solid rgba(152, 11, 240, 0.7);
+    text-align: center;
+    color: var(--text-color);
+    font-family: 'Orbitron', sans-serif;
+    animation: popIn var(--transition-speed);
+}
+
+/* Título */
+.popup-content h3 {
+    color: var(--hover-color);
+    text-shadow: 0 0 5px var(--hover-color);
+    margin-bottom: 10px;
+}
+
+/* Efecto neón para la lista */
+.popup-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.popup-content ul li {
+    font-size: 16px;
+    padding: 5px 0;
+    color: var(--text-color);
+    text-shadow: 0 0 5px var(--hover-color);
+    transition: color var(--transition-speed);
+}
+
+.popup-content ul li:hover {
+    color: var(--hover-color);
 }
 
 /* Botón de cerrar */
 .close-btn {
-    color: red;
+    color: var(--hover-color);
     float: right;
     font-size: 24px;
     font-weight: bold;
     cursor: pointer;
+    text-shadow: 0px 0px 8px var(--hover-color);
+    transition: color var(--transition-speed);
+}
+
+.close-btn:hover {
+    color: #fff;
+    text-shadow: 0px 0px 12px var(--hover-color);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    from {
+        transform: translate(-50%, -55%) scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
 }
 
 </style>
@@ -537,22 +596,22 @@
 <div id="popup-modal" class="popup">
   <div class="popup-content">
       <span class="close-btn">&times;</span>
-      <h3>📌 Plataformas Disponibles</h3>
+      <h3>Plataformas Disponibles</h3>
       <ul>
-          <li>✅ YouTube</li>
-          <li>✅ TikTok</li>
-          <li>✅ Facebook</li>
-          <li>✅ Instagram</li>
-          <li>✅ Linkedin </li>
-          <li>✅ Kick</li>
-          <li>✅ Twitter</li>
-          <li>✅ Vimeo</li>
-          <li>✅ Dailymotion</li>
-          <li>✅ Twitch</li>
-          <li>✅ Xvideo</li>
-          <li>✅ Pornhub </li>
-          <li>✅ Pornotube</li>
-          <li>✅ Xhamster</li>
+          <li>YouTube</li>
+          <li>TikTok</li>
+          <li>Facebook</li>
+          <li>Instagram</li>
+          <li>Linkedin </li>
+          <li>Kick</li>
+          <li>Twitter</li>
+          <li>Vimeo</li>
+          <li>Dailymotion</li>
+          <li>Twitch</li>
+          <li>Xvideo</li>
+          <li>Pornhub </li>
+          <li>Pornotube</li>
+          <li>Xhamster</li>
       </ul>
   </div>
 </div>
