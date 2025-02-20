@@ -339,5 +339,7 @@ def get_downloader(url: str):
         return TikTokDownloader().some_operation(url)
     elif "threads" in dominio:
         return TikTokDownloader().some_operation(url)
+    elif "pornotube" in dominio:
+        return TikTokDownloader().some_operation(url)
     else:
         raise ValueError(f"Dominio no soportado: {dominio}")
