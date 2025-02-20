@@ -543,13 +543,16 @@
           <li>✅ TikTok</li>
           <li>✅ Facebook</li>
           <li>✅ Instagram</li>
+          <li>✅ Linkedin </li>
           <li>✅ Kick</li>
           <li>✅ Twitter</li>
           <li>✅ Vimeo</li>
           <li>✅ Dailymotion</li>
           <li>✅ Twitch</li>
-          <li>✅ Soundcloud</li>
-          <li>✅ Audiomack</li>
+          <li>✅ Xvideo</li>
+          <li>✅ Pornhub </li>
+          <li>✅ Pornotube</li>
+          <li>✅ Xhamster</li>
       </ul>
   </div>
 </div>
@@ -610,22 +613,23 @@
     }
   };
 
-  document.getElementById("link-input").addEventListener("click", function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    // Mostrar el popup automáticamente al cargar la web
     document.getElementById("popup-modal").style.display = "block";
 });
 
-  // Cierra el popup al hacer clic en "×"
-  document.querySelector(".close-btn").addEventListener("click", function () {
-      document.getElementById("popup-modal").style.display = "none";
-  });
+// Cierra el popup al hacer clic en "×"
+document.querySelector(".close-btn").addEventListener("click", function () {
+    document.getElementById("popup-modal").style.display = "none";
+});
 
-  // Cierra el popup al hacer clic fuera del contenido
-  window.addEventListener("click", function (event) {
-      let popup = document.getElementById("popup-modal");
-      if (event.target === popup) {
-          popup.style.display = "none";
-      }
-  });
+// Cierra el popup al hacer clic fuera del contenido
+window.addEventListener("click", function (event) {
+    let popup = document.getElementById("popup-modal");
+    if (event.target === popup) {
+        popup.style.display = "none";
+    }
+});
 </script>
 
 {% endblock %}
