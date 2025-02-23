@@ -195,6 +195,9 @@ class YouTubeProduct(Product):
             "outtmpl": os.path.join(DOWNLOAD_PATH, "%(title)s.%(ext)s"),
             "geo_bypass": True,
             "cookiefile": cookies_file,  # Pasar el archivo de cookies
+            "limit_rate": "50K",         # Limitar velocidad de descarga a 50 KB/s
+            "sleep_requests": 2,         # Esperar 2 segundos entre solicitudes
+            "sleep_interval": 5          # Esperar 5 segundos entre descargas
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([self.url])
