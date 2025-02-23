@@ -10,6 +10,8 @@ DOWNLOAD_PATH = "./downloads"
 if not os.path.exists(DOWNLOAD_PATH):
     os.makedirs(DOWNLOAD_PATH)
 
+cookies_file = os.path.join(os.getcwd(), "static", "cookies.txt")
+print ("coookis", cookies_file)
 
 
 class Downloader(ABC):
@@ -46,7 +48,6 @@ class Downloader(ABC):
         #print(f"Nombre 1 del archivo sanitizado: {ulti}")
         return ulti
 
-
 class Product(ABC):
     """
     Clase abstracta que define la interfaz de los productos.
@@ -66,7 +67,6 @@ class TikTokDownloader(Downloader):
     def factory_method(self, url: str) -> Product:
         print(f"Descargando video de TikTok desde la URL: {url}")
         return TikTokProduct(url)
-
 
 class TikTokProduct(Product):
     """
@@ -93,7 +93,6 @@ class TikTokProduct(Product):
         if not os.path.exists(video_file_path):
             raise DownloadError("El archivo no fue descargado correctamente.")
         return video_file_path
-
 
 class InstagramDownloader(Downloader):
     """
@@ -137,7 +136,6 @@ class FacebookDownloader(Downloader):
     def factory_method(self, url: str) -> Product:
         print(f"Descargando video de Facebook desde la URL: {url}")
         return FacebookProduct(url)
-
 
 class FacebookProduct(Product):
     """
@@ -192,7 +190,12 @@ class YouTubeProduct(Product):
 
         video_file_path = os.path.join(DOWNLOAD_PATH, f"{clean_video_title}.mp4")
 
-        ydl_opts = {"format": "best", "outtmpl": video_file_path, "geo_bypass": True}
+        ydl_opts = {
+            "format": "best",
+            "outtmpl": os.path.join(DOWNLOAD_PATH, "%(title)s.%(ext)s"),
+            "geo_bypass": True,
+            "cookiefile": cookies_file,  # Pasar el archivo de cookies
+        }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([self.url])
 
@@ -316,7 +319,7 @@ def get_downloader(url: str):
     elif "instagram" in dominio:
         return InstagramDownloader().some_operation(url)
     elif "youtube" in dominio:
-        return TikTokDownloader().some_operation(url)
+        return YouTubeDownloader().some_operation(url)
     elif "youtu" in dominio:
         return TikTokDownloader().some_operation(url)
     elif "xvideos" in dominio:
