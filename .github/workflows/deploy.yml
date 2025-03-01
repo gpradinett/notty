@@ -3,22 +3,26 @@ name: Deploy to AWS
 on:
   push:
     branches:
-      - main
+      - main  # Se activa cuando se hace un push a la rama principal
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # El flujo de trabajo se ejecutará en un contenedor Ubuntu
+
     steps:
+      # 1. Checkout del repositorio
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      # 2. Configuración de credenciales de AWS
       - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v1  # Usamos la versión v1 por estabilidad
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: 'us-east-2'
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  # Se obtiene del secreto AWS_ACCESS_KEY_ID
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # Se obtiene del secreto AWS_SECRET_ACCESS_KEY
+          aws-region: 'us-east-2'  # Ajusta la región según tu configuración
 
+      # 3. Desplegar en la instancia EC2
       - name: Deploy to EC2 instance
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.SSH_HOST }} "cd /path/to/your/app && git pull origin main && ./deploy.sh"
