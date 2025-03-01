@@ -1,28 +1,25 @@
-name: Deploy to AWS
+name: Test AWS Credentials
 
 on:
   push:
     branches:
-      - main  # Se activa cuando se hace un push a la rama principal
+      - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest  # El flujo de trabajo se ejecutará en un contenedor Ubuntu
+  test-aws-credentials:
+    runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout del repositorio
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # 2. Configuración de credenciales de AWS
       - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1  # Usamos la versión v1 por estabilidad
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  # Se obtiene del secreto AWS_ACCESS_KEY_ID
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # Se obtiene del secreto AWS_SECRET_ACCESS_KEY
-          aws-region: 'us-east-2'  # Ajusta la región según tu configuración
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'us-east-2'
 
-      # 3. Desplegar en la instancia EC2
-      - name: Deploy to EC2 instance
+      - name: Validate AWS credentials
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.SSH_HOST }} "cd /path/to/your/app && git pull origin main && ./deploy.sh"
+          aws sts get-caller-identity
