@@ -1,4 +1,4 @@
-name: Debugging AWS Secrets
+name: Deploy to AWS
 
 on:
   push:
@@ -6,28 +6,21 @@ on:
       - main
 
 jobs:
-  debug:
+  deploy:
     runs-on: ubuntu-latest
-    environment: production  # Asegúrate de que el entorno se llama 'production' o el que hayas configurado
-    
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Check out repository
+      uses: actions/checkout@v2
 
-      - name: Debugging AWS Secrets (Environment Variables)
-        run: |
-          echo "AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}"
-          echo "AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-          echo "SSH_HOST: ${{ secrets.SSH_HOST }}"
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}  # Si usas STS
+        aws-region: us-east-2
 
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
-
-      - name: Test AWS CLI
-        run: |
-          aws sts get-caller-identity
-
+    - name: Deploy to EC2
+      run: |
+        aws ec2 describe-instances --region us-east-2
