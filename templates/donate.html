@@ -1,28 +1,146 @@
 {% extends "base.html" %}
 
 {% block content %}
-<body>
-  <!-- Main Content -->
-  <div class="main-content">
-  <div class="card">
-      <img
-        src="https://uiverse.io/astronaut.png"
-        alt=""
-        class="image"
-      />
-      <div class="heading"></div>
-      <div class="icons">
+<div class="donation-container">
+  <h2>Support Our Mission with Crypto Donations</h2>
+<p>
+  Your contribution helps us grow, innovate, and continue building amazing projects.  
+  Support us by donating with your favorite cryptocurrency and be part of our journey.
+</p>
+
+  
+  <div class="donation-card">
+    <h3>Select a cryptocurrency</h3>
+    <p>Click on a cryptocurrency to view the wallet address</p>
+    
+    <div class="crypto-buttons">
+      <button class="crypto-btn btc" onclick="showWallet('btc')">&#8383; Bitcoin</button>
+      <button class="crypto-btn eth" onclick="showWallet('eth')">&#x2686; Ethereum</button>
+      <button class="crypto-btn usdt" onclick="showWallet('usdt')">&#36; USDT</button>
+    </div>
+    
+    <div class="wallet-address" id="wallet-display">
+      <label id="wallet-label">Select a cryptocurrency</label>
+      <div class="wallet-box">
+        <input type="text" id="wallet-input" readonly>
+        <button onclick="copyWallet()">
+          <i class="fas fa-copy"></i>
+        </button>
       </div>
     </div>
-    <div class="input-box">
-      <input type="text" placeholder="Paste the link here">
-      <button>Paste</button>
-    </div>
-    <div class="options">
-      <button>Auto</button>
-      <button>Audio</button>
-      <button>Mute</button>
-    </div>
   </div>
-</body>
+</div>
+
+<style>
+  .donation-container {
+    text-align: center;
+    margin-top: 150px;
+    color: var(--text-color);
+  }
+
+  .donation-card {
+    background: var(--secondary-bg);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    display: inline-block;
+    width: 400px;
+  }
+
+  .crypto-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .crypto-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btc { background-color: #000000; color: #f7931a; }
+  .eth { background-color: #020202; color: #627eea; }
+  .usdt { background-color: #000000; color: #26a17b; }
+
+  .crypto-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+  }
+
+  .crypto-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: left 0.3s ease-in-out;
+  }
+
+  .crypto-btn:hover::before {
+    left: 100%;
+  }
+
+
+  .wallet-address {
+    margin-top: 20px;
+  }
+
+  .wallet-box {
+    display: flex;
+    align-items: center;
+    background: var(--primary-bg);
+    padding: 8px;
+    border-radius: 5px;
+    margin-top: 12px;
+  }
+
+  #wallet-input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    font-size: 16px;
+    color: var(--text-color);
+  }
+
+  .wallet-box button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--hover-color);
+  }
+
+  .wallet-box button:hover {
+    color: #fff;
+  }
+</style>
+
+<script>
+  const wallets = {
+    btc: '1FS9TJTeGcoSPX8Y2x5DK19rJUzdcUHUk8',
+    eth: '0x074b9cbb30e3bde1bf309bf6b6ec7dd5aebcc0fc',
+    usdt: '0x074b9cbb30e3bde1bf309bf6b6ec7dd5aebcc0fc'
+  };
+
+  function showWallet(crypto) {
+    document.getElementById('wallet-input').value = wallets[crypto];
+    document.getElementById('wallet-label').innerText = crypto.toUpperCase() + ' Wallet Address:';
+  }
+
+  function copyWallet() {
+    const walletInput = document.getElementById('wallet-input');
+    walletInput.select();
+    document.execCommand('copy');
+    alert('Wallet address copied!');
+  }
+</script>
 {% endblock %}
