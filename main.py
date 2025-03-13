@@ -108,7 +108,7 @@ def get_full_tiktok_url(url: str) -> str:
 @app.post("/verify")
 async def tiktok(url: str = Form(...)):
     print(f"URL obtenida: {url}")
-    dominios_permitidos = ["facebook.com", "tiktok.com", "instagram.com", "vm.tiktok.com", "youtube.com", "youtu.be", "xvideos.com", "kick.com", "platzi.com", "udemy.com", "coursera.org", "linkedin.com", "twitter.com", "github.com", "gitlab.com", "bitbucket.org", "stackoverflow.com", "medium.com", "dev.to", "reddit.com", "pinterest.com", "es.pornhub.com", "peladas69.com", "es.xhamster.com", "threads.net", "pornotube.com"]
+    dominios_permitidos = ["facebook.com", "tiktok.com", "instagram.com", "vm.tiktok.com", "youtube.com", "youtu.be", "xvideos.com", "kick.com", "clips.kick.com" ,"platzi.com", "udemy.com", "coursera.org", "linkedin.com", "twitter.com", "github.com", "gitlab.com", "bitbucket.org", "stackoverflow.com", "medium.com", "dev.to", "reddit.com", "pinterest.com", "es.pornhub.com", "peladas69.com", "es.xhamster.com", "threads.net", "pornotube.com"]
     
     # Verificar si la URL es de TikTok y seguir la redirección si es necesario
     url = get_full_tiktok_url(url)

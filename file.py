@@ -4,7 +4,8 @@ from urllib.parse import urlparse
 import re
 import os
 from fastapi import HTTPException
-
+import subprocess
+import cloudscraper
 
 DOWNLOAD_PATH = "./downloads"
 if not os.path.exists(DOWNLOAD_PATH):
@@ -260,46 +261,105 @@ class kickProduct(Product):
         return self.download_video()
 
     def download_video(self) -> str:
-        ydl_opts_info = {
-            "noplaylist": True,
-            "extractor_args": {"kick": {"impersonate": "chrome"}},
-            "http_headers": {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            }
-        }
+        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        video_title = "Kick_Video"
+        clean_video_title = video_title
+        video_file_path = os.path.join(DOWNLOAD_PATH, f"{clean_video_title}.mp4")
+        
+        command = [
+            "streamlink",
+            "--http-header", f"User-Agent={user_agent}",
+            self.url, "best",
+            "--output", video_file_path
+        ]
 
         try:
-            with yt_dlp.YoutubeDL(ydl_opts_info) as ydl:
-                info_dict = ydl.extract_info(self.url, download=False)
-                if not info_dict:
-                    raise Exception("No se pudo extraer la información del video.")
-
-                video_filename = info_dict.get("title", "Kick Video")
-                clean_video_title = self.sanitize_filename(video_filename)
-
-            video_file_path = os.path.join(DOWNLOAD_PATH, f"{clean_video_title}.mp4")
-
-            ydl_opts = {
-                "format": "best",
-                "outtmpl": "video.mp4",
-                "extractor_args": {
-                    "kick": {"impersonate": "chrome"}
-                },
-                "http_headers": {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, como Gecko) Chrome/120.0.0.0 Safari/537.36"
-                }
-            }
-
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([self.url])
+            result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            if result.returncode != 0:
+                raise Exception(f"Error al descargar el video: {result.stderr}")
 
             if not os.path.exists(video_file_path):
                 raise Exception("El archivo no fue descargado correctamente.")
 
             return video_file_path
+        except Exception as e:
+            raise Exception(f"Fallo en la descarga: {e}")
 
-        except yt_dlp.utils.DownloadError as e:
-            raise Exception(f"Error al descargar el video: {e}")
+class kickClipDownloader(Downloader):
+    """
+    Descargador para clips de Kick.
+    """
+    def factory_method(self, url: str) -> Product:
+        print(f"Descargando clip de kick desde la URL: {url}")
+        return kickClipProduct(url)
+
+def get_kick_clip_m3u8(url: str) -> str:
+    """
+    Extrae la URL del archivo M3U8 de un clip de Kick.
+    """
+    scraper = cloudscraper.create_scraper()
+    response = scraper.get(url)
+
+    match = re.search(r'(https://clips\.kick\.com/.+?/thumbnail\.webp)\\",\\"privacy\\":\\"(.*?)\\",\\"likes\\":(\d+),\\"liked\\":(true|false),\\"views\\":(\d+),\\"duration\\":(\d+),\\"started_at\\":\\"(.*?)\\",\\"created_at\\":\\"(.*?)\\",\\"vod_starts_at\\":(\d+),\\"is_mature\\":(true|false),\\"video_url\\":\\"(https://clips\.kick\.com/.+?/playlist\.m3u8)', response.text)
+
+    print("match", match)
+    if match:
+    # Crear un diccionario con los datos extraídos
+        data = {
+
+            "privacy": match.group(2),
+            "likes": int(match.group(3)),
+            "liked": match.group(4) == "true",
+            "views": int(match.group(5)),
+            "duration": int(match.group(6)),
+            "started_at": match.group(7),
+            "created_at": match.group(8),
+            "vod_starts_at": int(match.group(9)),
+            "is_mature": match.group(10) == "true",
+            "video_url": match.group(11).replace('\"video_url\":\"', '').rstrip('\"')
+        }
+        return data["video_url"]
+    else:
+        raise Exception("No se encontró la URL del archivo M3U8 del clip.")
+
+class kickClipProduct(Product):
+    """
+    Producto concreto que representa un clip de kick.
+    """
+    def __init__(self, url: str):
+        self.url = url
+
+    def operation(self) -> str:
+        return self.download_clip()
+    
+    def download_clip(self) -> str:
+        print(f"Obteniendo URL M3U8 del clip: {self.url}")
+        m3u8_url = get_kick_clip_m3u8(self.url)  # Extrae el link .m3u8
+        print(f"URL M3U8 encontrada: {m3u8_url}")
+
+        clip_title = "Kick_Clip"
+        clean_clip_title = clip_title
+        clip_file_path = os.path.join(DOWNLOAD_PATH, f"{clean_clip_title}.mp4")
+
+        command = [
+            "streamlink",
+            "--http-header", "User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            m3u8_url, "best",
+            "--output", clip_file_path
+        ]
+
+        try:
+            result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            if result.returncode != 0:
+                raise Exception(f"Error al descargar el clip con streamlink: {result.stderr}")
+
+            if not os.path.exists(clip_file_path):
+                raise Exception("El archivo del clip no fue descargado correctamente.")
+
+            return clip_file_path
+        except Exception as e:
+            raise Exception(f"Fallo en la descarga del clip: {e}")
+
 
 class DownloadError(HTTPException):
     def __init__(self, message: str):
@@ -328,7 +388,10 @@ def get_downloader(url: str):
     elif "xvideos" in dominio:
         return XvideosDownloader().some_operation(url)
     elif "kick" in dominio:
-        return kickDownloader().some_operation(url)
+        if "/videos/" in url:
+            return kickDownloader().some_operation(url)
+        elif "/clips/" in url:
+            return kickClipDownloader().some_operation(url)
     elif "platzi" in dominio:
         return TikTokDownloader().some_operation(url)
     elif "pornhub" in dominio:
